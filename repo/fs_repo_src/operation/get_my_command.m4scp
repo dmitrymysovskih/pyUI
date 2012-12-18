@@ -107,6 +107,8 @@ procedure(my_comm,
 	//рутовый элемент меню
 	main_menu;
 	
+	stype_sheaf;
+	
 	// Ўаблон дл€ поиска арифметических отношений без атрибутов
 	
 /*!
@@ -151,8 +153,11 @@ procedure(my_comm,
 	needEraseArc,
 	EraseInFindedDecomp,
 	node,
+	oneMoreNode,
 	arc,
 	searching_node,
+	deleteAfterUse,
+	updateAfterUse,
 	finded_decomp,
 		//св€зка
 	sheaf,
@@ -164,9 +169,10 @@ procedure(my_comm,
 	up_node,
 	up_nodes,
 	upViewedNode,
-		stype_sheaf,
 		relation,
 		node1,
+		mypermrel,
+		myresult,
 	answer
 }],
 {[
@@ -212,14 +218,53 @@ searchElStr3([
 	genEl([
 		1_: assign_: node_: result
 	])
+		genEl([
+		1_: assign_: node_: myresult
+	])
 	genEl([
 		1_: assign_: node_: nodesToView
 	])
 		genEl([
 		1_: assign_: node_: up_nodes
 	])
+			genEl([
+		1_: assign_: node_: mypermrel
+	])
 varAssign([1_:upper_menu,2_:object])
+		genEl([
+		1_: assign_: var_: node_: node
+	])
 
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:node
+])	
+genElStr3([
+	1_:fixed_:ui_user_command,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:node
+])
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:ui_user_command
+])		
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+])		
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:assign_:var_:oneMoreNode
+])
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+])		
 
 /* make answer */
 
@@ -273,24 +318,17 @@ ifCoin([
 ],ending,secondSegment,goto_error)
 
 label(secondSegment)
-genElStr5([
+
+genElStr3([
 	1_:fixed_:viewedNode,
-	2_:assign_:const_:pos_:arcVar,
-	3_:fixed_:old_upper_menu,			
-	4_:assign_:const_:pos_:arcVaric,
-	5_:fixed_:nrel_basic_sequence
+	2_:assign_:var_:neg_:arcVar,
+	3_:fixed_:old_upper_menu
 ])	
 
 genElStr3([
 	1_:fixed_:result,
 	2_:assign_:const_:pos_:arc,
 	3_:fixed_:viewedNode
-])	
-
-genElStr3([
-	1_:fixed_:result,
-	2_:assign_:const_:pos_:arc,
-	3_:fixed_:arcVaric
 ])	
 
 genElStr3([
@@ -305,12 +343,12 @@ varAssign([1_:upper_menu,2_:viewedNode],oneMoreUp)
 
 label(ending)
 
-genElStr5([
-	1_:fixed_:"/ui/menu/main_menu",
-	2_:assign_:const_:pos_:arcVar,
-	3_:fixed_:old_upper_menu,			
-	4_:assign_:const_:pos_:arcVaric,
-	5_:fixed_:nrel_basic_sequence
+varAssign([1_:upper_menu,2_:"/ui/menu/main_menu"])
+
+genElStr3([
+	1_:fixed_:upper_menu,
+	2_:assign_:var_:neg_:arc_:arcVar,
+	3_:fixed_:old_upper_menu
 ])	
 
 genElStr3([
@@ -322,20 +360,383 @@ genElStr3([
 genElStr3([
 	1_:fixed_:result,
 	2_:assign_:const_:pos_:arc,
-	3_:fixed_:arcVaric
-])	
+	3_:fixed_:arcVar
+],thirdSegment)	
+
+label(thirdSegment)
+///////////////////////////////////////////////////////
+varAssign([1_:viewedNode,2_:upper_menu])
+
+label(generetionOneMore)
+printNl([ 1_: /"***************************"/ ])		
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
 
 genElStr3([
-	1_:fixed_:result,
+	1_:fixed_:ui_cmd_mouse_move_obj,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:ui_cmd_mouse_move_obj
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:myresult,
 	2_:assign_:const_:pos_:arc,
 	3_:fixed_:arcVar
-])	
+],,,goto_error)	
+
+
 
 genElStr3([
-	1_:fixed_:result,
+	1_:fixed_:"элементарна€ пользовательска€ команда",
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
 	2_:assign_:const_:pos_:arc,
-	3_:fixed_:nrel_basic_sequence
+	3_:fixed_:arcVar
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:"элементарна€ пользовательска€ команда"
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:oneMoreNode,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:viewedNode
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:viewedNode
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)	
+
+genElStr5([
+	1_:fixed_:oneMoreNode,
+	2_:assign_:var_:pos_:arcVar,
+	3_:assign_:var_:node,
+	4_:assign_:var_:arcVaric,
+	5_:fixed_:1_
+],,,goto_error)
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:node
+],,,goto_error)
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVaric
+],,,goto_error)
+
+genElStr5([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:assign_:var_:oneMoreNode,
+	4_:assign_:var_:arcVaric,
+	5_:fixed_:2_
+],,,goto_error)
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:oneMoreNode
 ])
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVaric
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:"базова€ последовательность*"
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:stype_sheaf
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+////////////////////////////////////////////////
+
+genElStr3([
+	1_:fixed_:ui_cmd_mouse_button_press,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:ui_cmd_mouse_button_press
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)	
+
+
+genElStr3([
+	1_:fixed_:"элементарна€ пользовательска€ команда",
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:"элементарна€ пользовательска€ команда"
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:oneMoreNode,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:mouse_button_left
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:mouse_button_left
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)	
+
+genElStr5([
+	1_:fixed_:oneMoreNode,
+	2_:assign_:var_:pos_:arcVar,
+	3_:assign_:var_:node,
+	4_:assign_:var_:arcVaric,
+	5_:fixed_:1_
+],,,goto_error)
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:node
+],,,goto_error)
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVaric
+],,,goto_error)
+
+genElStr5([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:assign_:var_:oneMoreNode,
+	4_:assign_:var_:arcVaric,
+	5_:fixed_:2_
+],,,goto_error)
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:oneMoreNode
+])
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVaric
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:"базова€ последовательность*"
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:stype_sheaf
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+////////////////////////////////////////////////
+
+genElStr3([
+	1_:fixed_:ui_cmd_mouse_button_release,
+	2_:assign_:var_:pos_:arc,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:"элементарна€ пользовательска€ команда",
+	2_:assign_:var_:pos_:arc,
+	3_:fixed_:oneMoreNode
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:oneMoreNode,
+	2_:assign_:var_:pos_:arc,
+	3_:fixed_:mouse_button_left
+],,,goto_error)	
+
+genElStr5([
+	1_:fixed_:oneMoreNode,
+	2_:assign_:var_:pos_:arcVar,
+	3_:assign_:var_:node,
+	4_:assign_:var_:arcVaric,
+	5_:fixed_:1_
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVaric
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:node
+],,,goto_error)
+
+genElStr5([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVaric,
+	3_:assign_:var_:oneMoreNode,
+	4_:assign_:var_:arcVar,
+	5_:fixed_:2_
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVaric
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:"базова€ последовательность*"
+],,,goto_error)	
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:node,
+	2_:assign_:var_:pos_:arcVar,
+	3_:fixed_:stype_sheaf
+],,,goto_error)
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:arcVar
+],,,goto_error)
+////////////////////////////////////////////
+
+searchElStr3([
+	1_: fixed_: viewedNode,
+	2_: assign_: var_:neg_: arcVar,
+	3_: assign_: updateAfterUse
+],,genAnswer)
+
+
+varAssign([1_:viewedNode,2_:updateAfterUse],generetionOneMore)
+
+label(genAnswer)
+printNl([ 1_: /"genAnswer"/ ])	
+
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:"базова€ последовательность*"
+],,,goto_error)	
+genElStr3([
+	1_:fixed_:myresult,
+	2_:assign_:const_:pos_:arc,
+	3_:fixed_:stype_sheaf
+],,,goto_error)
+
+printEl([ 1_: myresult])
 
 	/////////////////////////////////////////////////////
 	// Call of the answer making procedure
@@ -343,7 +744,7 @@ genElStr3([
 		1_:	fixed_: answer_make,
 		2_:	fixed_: {[
 				1_: questionLink,
-				2_: result
+				2_: myresult
 			]}
 		]
 	)
